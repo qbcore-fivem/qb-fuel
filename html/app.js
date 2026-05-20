@@ -44,9 +44,7 @@ class ProgressBar {
             this.progressValue = this.progressMin;
         }
 
-        this.progressFill.style.height = `${
-            (this.progressValue / this.progressMax) * 100
-        }%`;
+        this.progressFill.style.height = `${(this.progressValue / this.progressMax) * 100}%`;
     }
 
     setValue(value) {
@@ -87,10 +85,7 @@ const setupTranslations = (language) => {
         if (element.children.length > 0) {
             let translation = translations[key];
             [...element.children].forEach((child) => {
-                translation = translation.replace(
-                    `%{${child.id}}`,
-                    child.outerHTML
-                );
+                translation = translation.replace(`%{${child.id}}`, child.outerHTML);
             });
             element.innerHTML = translation;
             return;

@@ -1,6 +1,6 @@
 -- ====================|| VARIABLES || ==================== --
 
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = exports['qb-core']:GetCoreObject({ 'Functions', 'PlayerData' })
 local CurrentPump = nil
 local CurrentObjects = { nozzle = nil, rope = nil }
 local CurrentVehicle = nil
@@ -8,7 +8,7 @@ local Blips = {}
 
 -- ====================|| FUNCTIONS || ==================== --
 
-local loadAnimDict = function (dict)
+local loadAnimDict = function(dict)
     if not DoesAnimDictExist(dict) then return end
     while not HasAnimDictLoaded(dict) do
         RequestAnimDict(dict)
@@ -16,7 +16,7 @@ local loadAnimDict = function (dict)
     end
 end
 
-local removeObjects = function ()
+local removeObjects = function()
     CurrentPump = nil
     if CurrentVehicle then
         Entity(CurrentVehicle).state:set('nozzleAttached', false, true)
@@ -36,7 +36,7 @@ local removeObjects = function ()
     LocalPlayer.state:set('hasNozzle', false, true)
 end
 
-local refuelVehicle = function (veh)
+local refuelVehicle = function(veh)
     if not veh or not DoesEntityExist(veh) then return QBCore.Functions.Notify(Lang:t('error.no_vehicle')) end
 
     local ped = PlayerPedId()
@@ -70,8 +70,8 @@ local grabFuelFromPump = function(ent)
     CurrentPump = ent
     if not CurrentPump then return end
 
-	local ped = PlayerPedId()
-	local pump = GetEntityCoords(CurrentPump)
+    local ped = PlayerPedId()
+    local pump = GetEntityCoords(CurrentPump)
     loadAnimDict('anim@am_hold_up@male')
     TaskPlayAnim(ped, 'anim@am_hold_up@male', 'shoplift_high', 2.0, 8.0, -1, 50, 0, false, false, false)
     Wait(300)
@@ -121,13 +121,13 @@ local getVehicleCurrentSide = function(veh)
     local crossZ = vehForward.x * toPump.y - vehForward.y * toPump.x
 
     if crossZ > 0 then
-        return "left"
+        return 'left'
     else
-        return "right"
+        return 'right'
     end
 end
 
-local nozzleToVehicle = function (veh)
+local nozzleToVehicle = function(veh)
     if getVehicleCurrentSide(veh) ~= 'left' then return QBCore.Functions.Notify(Lang:t('error.wrong_side'), 'error') end
 
     local isBike = false
@@ -140,31 +140,31 @@ local nozzleToVehicle = function (veh)
     local vehClass = GetVehicleClass(veh)
 
     if vehClass == 8 then
-        tankBone = GetEntityBoneIndexByName(veh, "petrolcap")
+        tankBone = GetEntityBoneIndexByName(veh, 'petrolcap')
         if tankBone == -1 then
-            tankBone = GetEntityBoneIndexByName(veh, "petroltank")
+            tankBone = GetEntityBoneIndexByName(veh, 'petroltank')
         end
         if tankBone == -1 then
-            tankBone = GetEntityBoneIndexByName(veh, "engine")
+            tankBone = GetEntityBoneIndexByName(veh, 'engine')
         end
         isBike = true
     elseif vehClass ~= 13 then
-        tankBone = GetEntityBoneIndexByName(veh, "petrolcap")
+        tankBone = GetEntityBoneIndexByName(veh, 'petrolcap')
         if tankBone == -1 then
-            tankBone = GetEntityBoneIndexByName(veh, "petroltank_l")
+            tankBone = GetEntityBoneIndexByName(veh, 'petroltank_l')
         end
         if tankBone == -1 then
-            tankBone = GetEntityBoneIndexByName(veh, "hub_lr")
+            tankBone = GetEntityBoneIndexByName(veh, 'hub_lr')
         end
         if tankBone == -1 then
-            tankBone = GetEntityBoneIndexByName(veh, "handle_dside_r")
+            tankBone = GetEntityBoneIndexByName(veh, 'handle_dside_r')
             nozzleModifiedPosition.x = 0.1
             nozzleModifiedPosition.y = -0.5
             nozzleModifiedPosition.z = -0.6
         end
     end
 
-    local wheelPos = GetWorldPositionOfEntityBone(veh, GetEntityBoneIndexByName(veh, "wheel_lr"))
+    local wheelPos = GetWorldPositionOfEntityBone(veh, GetEntityBoneIndexByName(veh, 'wheel_lr'))
     local wheelRPos = GetOffsetFromEntityGivenWorldCoords(veh, wheelPos.x, wheelPos.y, wheelPos.z)
 
     DetachEntity(CurrentObjects.nozzle, false, true)
@@ -188,7 +188,7 @@ local nozzleToVehicle = function (veh)
     FreezeEntityPosition(CurrentObjects.nozzle, true)
     FreezeEntityPosition(CurrentVehicle, true)
 
-    CreateThread((function ()
+    CreateThread((function()
         while DoesEntityExist(CurrentObjects.nozzle) and DoesEntityExist(CurrentVehicle) and Entity(veh).state.nozzleAttached do
             Wait(1000)
         end
@@ -197,7 +197,7 @@ local nozzleToVehicle = function (veh)
     end))
 end
 
-local refillVehicleFuel = function (liter)
+local refillVehicleFuel = function(liter)
     if not liter then return end
     if QBCore.PlayerData.money[Config.MoneyType] < liter * Config.FuelPrice then return QBCore.Functions.Notify(Lang:t('error.no_money'), 'error') end
     if not CurrentPump then return end
@@ -236,7 +236,7 @@ local refillVehicleFuel = function (liter)
     end)
 end
 
-local showFuelMenu = function ()
+local showFuelMenu = function()
     if not CurrentPump then return end
     local veh, dis = QBCore.Functions.GetClosestVehicle()
     if not veh or veh == -1 then return QBCore.Functions.Notify(Lang:t('error.no_vehicle')) end
@@ -249,14 +249,14 @@ local showFuelMenu = function ()
     SetNuiFocus(true, true)
 end
 
-local hideFuelMenu = function ()
+local hideFuelMenu = function()
     SendNUIMessage({
         action = 'hide'
     })
     SetNuiFocus(false, false)
 end
 
-local displayBlips = function ()
+local displayBlips = function()
     for _, station in ipairs(Config.GasStations) do
         local blip = AddBlipForCoord(station.x, station.y, station.z)
         SetBlipSprite(blip, Config.Blip.Sprite)
@@ -271,13 +271,13 @@ local displayBlips = function ()
     end
 end
 
-local deloadBlips = function ()
+local deloadBlips = function()
     for _, blip in ipairs(Blips) do
         RemoveBlip(blip)
     end
 end
 
-local setUpTarget = function ()
+local setUpTarget = function()
     for _, hash in pairs(Config.PumpModels) do
         exports['qb-target']:AddTargetModel(hash, {
             options = {
@@ -364,7 +364,7 @@ local setUpTarget = function ()
     })
 end
 
-local init = function ()
+local init = function()
     SetFuelConsumptionState(true)
     SetFuelConsumptionRateMultiplier(Config.GlobalFuelConsumptionMultiplier)
 
@@ -379,12 +379,12 @@ end
 
 -- ====================|| NUI CALLBACKS || ==================== --
 
-RegisterNuiCallback('close', function (_, cb)
+RegisterNuiCallback('close', function(_, cb)
     hideFuelMenu()
     cb('ok')
 end)
 
-RegisterNuiCallback('refill', function (data, cb)
+RegisterNuiCallback('refill', function(data, cb)
     if not data or not data.liter then return end
     hideFuelMenu()
     refillVehicleFuel(data.liter)
@@ -393,7 +393,7 @@ end)
 
 -- ====================|| EVENTS || ==================== --
 
-AddEventHandler('onResourceStop', function (res)
+AddEventHandler('onResourceStop', function(res)
     if GetCurrentResourceName() ~= res then return end
     removeObjects()
     deloadBlips()
@@ -404,8 +404,9 @@ RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
     deloadBlips()
 end)
 
-RegisterNetEvent('QBCore:Player:SetPlayerData', function(pData)
-    QBCore.PlayerData = pData
+RegisterNetEvent('QBCore:Client:OnPlayerUpdated', function(key, val)
+    if key ~= 'all' then return end
+    QBCore.PlayerData = val
 end)
 
 -- ====================|| INITIALIZATION || ==================== --

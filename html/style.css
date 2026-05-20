@@ -126,7 +126,9 @@ div.progress {
     border-radius: var(--md-radius-medium);
     overflow: hidden;
     box-shadow: var(--md-elevation-1);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    transition:
+        background-color 0.3s ease,
+        border-color 0.3s ease;
 }
 
 div.progress div {
@@ -135,11 +137,7 @@ div.progress div {
     left: 0;
     width: 100%;
     height: 0;
-    background: linear-gradient(
-        180deg,
-        var(--md-warning) 0%,
-        var(--md-warning-container) 100%
-    );
+    background: linear-gradient(180deg, var(--md-warning) 0%, var(--md-warning-container) 100%);
     transition: height 0.3s ease;
     border-radius: 0 0 var(--md-radius-small) var(--md-radius-small);
 }
@@ -192,7 +190,9 @@ main {
     box-shadow: var(--md-elevation-3);
     max-width: 380px;
     border: 1px solid var(--md-outline-variant);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    transition:
+        background-color 0.3s ease,
+        border-color 0.3s ease;
 }
 
 main h1 {
@@ -255,7 +255,9 @@ input {
     background-color: var(--md-surface-container);
     color: var(--md-on-surface);
     outline: none;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
+    transition:
+        border-color 0.3s ease,
+        background-color 0.3s ease;
     min-width: 120px;
 }
 
@@ -285,7 +287,9 @@ button {
     background-color: var(--md-primary);
     color: var(--md-on-primary);
     cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition:
+        background-color 0.3s ease,
+        box-shadow 0.3s ease;
     box-shadow: var(--md-elevation-1);
 }
 
@@ -357,19 +361,11 @@ button.loading::after {
 }
 
 div.progress[data-value="100"] div {
-    background: linear-gradient(
-        180deg,
-        var(--md-success) 0%,
-        var(--md-success-container) 100%
-    );
+    background: linear-gradient(180deg, var(--md-success) 0%, var(--md-success-container) 100%);
 }
 
 div.progress[data-value="0"] div {
-    background: linear-gradient(
-        180deg,
-        var(--md-error) 0%,
-        var(--md-error-container) 100%
-    );
+    background: linear-gradient(180deg, var(--md-error) 0%, var(--md-error-container) 100%);
 }
 
 input:invalid {
