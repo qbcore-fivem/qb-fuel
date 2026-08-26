@@ -7,7 +7,11 @@ QBCore = exports['qb-core']:GetCoreObject({ 'Functions' })
 QBCore.Functions.CreateCallback('qb-fuel:server:refillVehicle', function(src, cb, litres)
     local Player = exports['qb-core']:GetPlayer(src)
     if not Player then return end
-    if not litres then return end
+    litres = tonumber(litres)
+    if not litres or litres <= 0 then
+        cb(false)
+        return
+    end
 
     local finalPrice = litres * Config.FuelPrice
     if Player.PlayerData.money[Config.MoneyType] >= finalPrice then
